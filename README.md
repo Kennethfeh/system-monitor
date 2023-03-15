@@ -2,6 +2,8 @@
 
 A real-time system monitoring tool built with Go, featuring a web interface for tracking CPU, memory, disk, and network metrics.
 
+![System Monitor Screenshot](screenshot.png)
+
 ## Features
 
 - **Real-time Monitoring**: Live updates via WebSocket connection
