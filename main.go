@@ -64,13 +64,15 @@ func (s *Server) run() {
 		select {
 		case client := <-s.register:
 			s.clients[client] = true
-			log.Println("Client connected")
+			log.Printf("Client connected - Total clients: %d", len(s.clients))
 			
 			// Send historical data to new client
 			history := s.storage.GetHistory()
 			for _, metrics := range history {
 				if err := client.WriteJSON(metrics); err != nil {
 					log.Printf("Error sending historical data: %v", err)
+					delete(s.clients, client)
+					client.Close()
 					break
 				}
 			}
@@ -79,7 +81,7 @@ func (s *Server) run() {
 			if _, ok := s.clients[client]; ok {
 				delete(s.clients, client)
 				client.Close()
-				log.Println("Client disconnected")
+				log.Printf("Client disconnected - Total clients: %d", len(s.clients))
 			}
 
 		case metrics := <-s.broadcast:
