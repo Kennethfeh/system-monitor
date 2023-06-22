@@ -37,6 +37,12 @@ func (c *Collector) Collect() (models.SystemMetrics, error) {
 	// Collect CPU metrics
 	if cpuMetrics, err := c.collectCPU(); err == nil {
 		metrics.CPU = cpuMetrics
+	} else {
+		// Provide fallback CPU metrics
+		metrics.CPU = models.CPUMetrics{
+			TotalPercent: 0,
+			Cores:        runtime.NumCPU(),
+		}
 	}
 
 	// Collect Memory metrics
